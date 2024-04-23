@@ -5,10 +5,15 @@ Lossy audio compression typically achieves far greater compression than lossless
 Psychoacoustic optimization is a technique used in audio processing and compression. It takes advantage of the human auditory system's characteristics and limitations to minimize the perceived loss of audio quality while reducing file size.
 Some common psychoacoustic optimizations:
 + **Frequency Masking**: the presence of a louder sound at a particular frequency makes it difficult or impossible to hear a quieter sound at nearby frequencies.
-![frequency masking](img/2-1_frequency-masking.jpg)
+
+  <!-- ![frequency masking](img/2-1_frequency-masking.jpg) -->
+  <img src="img/2-1_frequency-masking.jpg" alt="frequency masking" width="500">
+
 
 + **Temporal Masking**: a loud sound makes it difficult to hear a quieter sound that occurs shortly before or after it in time.
-![temporal masking](img/2-2_temporal_masking.jpg)
+
+  <!-- ![temporal masking](img/2-2_temporal_masking.jpg) -->
+  <img src="img/2-2_temporal_masking.jpg" alt="temporal masking" width="500">
 
 ## Entropy coding ##
 
@@ -22,41 +27,46 @@ Example (https://www.scaler.com/topics/huffman-coding/)
 
 **Step 1**: calculate the frequency of each character in the given string.
 
-![step 1](img/2-3.jpg)
-
+<!-- ![step 1](img/2-3.jpg) -->
+<img src="img/2-3.jpg" alt="step 1" width="400">
 
 
 **Step 2**: get two minimum frequency nodes, and form a new node which frequency is 5 (2+3).
 
-![step 2](img/2-4.jpg)
+<!-- ![step 2](img/2-4.jpg) -->
+<img src="img/2-4.jpg" alt="step 2" width="400">
 
 
 
 **Step 3**: repeat step 2.
 
-![step 3](img/2-5.jpg)
+<!-- ![step 3](img/2-5.jpg) -->
+<img src="img/2-5.jpg" alt="step 3" width="400">
 
 
 **Step 4**: repeat step 2.
 
-![step 4](img/2-6.jpg)
+<!-- ![step 4](img/2-6.jpg) -->
+<img src="img/2-6.jpg" alt="step 4" width="400">
 
 
 **Step 5**: repeat step 2.
 
-![step 5](img/2-7.jpg)
+<!-- ![step 5](img/2-7.jpg) -->
+<img src="img/2-7.jpg" alt="step 5" width="400">
 
 
 
 **Step 6**: assign weight 0 and 1 to left and right edge to each node, or vice versa.
 
-![step 6](img/2-8.jpg)
-
+<!-- ![step 6](img/2-8.jpg) -->
+<img src="img/2-8.jpg" alt="step 6" width="400">
 
 
 **Step 7**: get the code for each character by traversing the full tree.
 
-![step 7](img/2-9.jpg)
+<!-- ![step 7](img/2-9.jpg) -->
+<img src="img/2-9.jpg" alt="step 7" width="400">
 
 ## Lossy audio codec ##
 

@@ -1,6 +1,9 @@
 # Basics of Digital Image #
 
 The **digital image** is a visual representation stored in a digital format. It is composed of discrete units called **pixels**, each containing color and brightness information, arranged in a grid pattern. 
+
+<img src="img/3-0.jpg" alt="digital_image" width="400">
+
 The basic attributes of a digital image typically include:
 + **Dimension**:  the size of the image, expressed as the number of pixels in width and height (e.g., 1920x1080).
 + **Color model**: a mathematical representation that defines how colors are represented and manipulated within the image.

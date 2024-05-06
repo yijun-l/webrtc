@@ -1,18 +1,21 @@
 #include "main_wnd.h"
 
-namespace {
+namespace
+{
 
-	HFONT GetDefaultFont() {
+	HFONT GetDefaultFont()
+	{
 		static HFONT font = reinterpret_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
 		return font;
 	}
 
 	void CalculateWindowSizeForText(HWND wnd,
-		const wchar_t* text,
-		size_t* width,
-		size_t* height) {
+									const wchar_t *text,
+									size_t *width,
+									size_t *height)
+	{
 		HDC dc = ::GetDC(wnd);
-		RECT text_rc = { 0 };
+		RECT text_rc = {0};
 		::DrawTextW(dc, text, -1, &text_rc, DT_CALCRECT | DT_SINGLELINE);
 		::ReleaseDC(wnd, dc);
 		RECT client, window;
@@ -29,7 +32,7 @@ namespace {
 ATOM MainWnd::wnd_class_ = 0;
 const wchar_t MainWnd::kClassName[] = L"WebRTC_MainWnd";
 
-MainWnd::MainWnd(const char* server, int port, bool auto_connect, bool auto_call)
+MainWnd::MainWnd(const char *server, int port, bool auto_connect, bool auto_call)
 	: ui_(CONNECT_TO_SERVER),
 	  wnd_(NULL),
 	  edit1_(NULL),
@@ -38,6 +41,7 @@ MainWnd::MainWnd(const char* server, int port, bool auto_connect, bool auto_call
 	  label2_(NULL),
 	  button_(NULL),
 	  listbox_(NULL),
+	  callback_(NULL),
 	  server_(server),
 	  auto_connect_(auto_connect),
 	  auto_call_(auto_call)
@@ -45,16 +49,21 @@ MainWnd::MainWnd(const char* server, int port, bool auto_connect, bool auto_call
 	char buffer[10];
 	snprintf(buffer, sizeof(buffer), "%i", port);
 	port_ = buffer;
-
 }
 
 MainWnd::~MainWnd()
 {
 }
 
+void MainWnd::RegisterObserver(MainWndCallback *callback)
+{
+	callback_ = callback;
+}
+
 bool MainWnd::Create()
 {
-	if (!RegisterWindowClass()) {
+	if (!RegisterWindowClass())
+	{
 		return false;
 	}
 
@@ -65,10 +74,9 @@ bool MainWnd::Create()
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		NULL,
-		NULL, 
-		GetModuleHandle(NULL), 
-		this
-		);
+		NULL,
+		GetModuleHandle(NULL),
+		this);
 
 	CreateChildWindows();
 	SwitchToConnectUI();
@@ -81,12 +89,12 @@ void MainWnd::SwitchToConnectUI()
 	LayoutPeerListUI(false);
 	ui_ = CONNECT_TO_SERVER;
 	LayoutConnectUI(true);
-
 }
 
 LRESULT MainWnd::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	switch (msg) {
+	switch (msg)
+	{
 	case WM_DESTROY:
 		::PostQuitMessage(0);
 		return 0;
@@ -97,7 +105,7 @@ LRESULT MainWnd::WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 bool MainWnd::RegisterWindowClass()
 {
-	WNDCLASS wc = { };
+	WNDCLASS wc = {};
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = GetModuleHandle(NULL);
 	wc.lpszClassName = kClassName;
@@ -105,11 +113,11 @@ bool MainWnd::RegisterWindowClass()
 	return wnd_class_ != 0;
 }
 
-void MainWnd::CreateChildWindow(HWND* wnd, ChildWindowID id, const wchar_t* class_name, DWORD control_style, DWORD ex_style)
+void MainWnd::CreateChildWindow(HWND *wnd, ChildWindowID id, const wchar_t *class_name, DWORD control_style, DWORD ex_style)
 {
-	DWORD style =  WS_CHILD | control_style;
+	DWORD style = WS_CHILD | control_style;
 	*wnd = ::CreateWindowExW(
-		ex_style, class_name, L"", style, 
+		ex_style, class_name, L"", style,
 		100, 100, 100, 100,
 		wnd_, reinterpret_cast<HMENU>(id), GetModuleHandle(NULL), NULL);
 	::SendMessage(*wnd, WM_SETFONT, reinterpret_cast<WPARAM>(GetDefaultFont()), TRUE);
@@ -130,24 +138,29 @@ void MainWnd::CreateChildWindows()
 
 void MainWnd::LayoutConnectUI(bool show)
 {
-	struct Windows {
+	struct Windows
+	{
 		HWND wnd;
-		const wchar_t* text;
+		const wchar_t *text;
 		size_t width;
 		size_t height;
 	} windows[] = {
-		{label1_, L"Server"},  {edit1_, L"XXXyyyYYYgggXXXyyyYYYggg"},
-		{label2_, L":"},       {edit2_, L"XyXyX"},
+		{label1_, L"Server"},
+		{edit1_, L"XXXyyyYYYgggXXXyyyYYYggg"},
+		{label2_, L":"},
+		{edit2_, L"XyXyX"},
 		{button_, L"Connect"},
 	};
 
-	if (show) {
+	if (show)
+	{
 		const size_t kSeparator = 5;
 		size_t total_width = (ARRAYSIZE(windows) - 1) * kSeparator;
 
-		for (size_t i = 0; i < ARRAYSIZE(windows); ++i) {
+		for (size_t i = 0; i < ARRAYSIZE(windows); ++i)
+		{
 			CalculateWindowSizeForText(windows[i].wnd, windows[i].text,
-				&windows[i].width, &windows[i].height);
+									   &windows[i].width, &windows[i].height);
 			total_width += windows[i].width;
 		}
 
@@ -155,19 +168,22 @@ void MainWnd::LayoutConnectUI(bool show)
 		::GetClientRect(wnd_, &rc);
 		size_t x = (rc.right / 2) - (total_width / 2);
 		size_t y = rc.bottom / 2;
-		for (size_t i = 0; i < ARRAYSIZE(windows); ++i) {
+		for (size_t i = 0; i < ARRAYSIZE(windows); ++i)
+		{
 			size_t top = y - (windows[i].height / 2);
 			::MoveWindow(windows[i].wnd, static_cast<int>(x), static_cast<int>(top),
-				static_cast<int>(windows[i].width),
-				static_cast<int>(windows[i].height), TRUE);
+						 static_cast<int>(windows[i].width),
+						 static_cast<int>(windows[i].height), TRUE);
 			x += kSeparator + windows[i].width;
 			if (windows[i].text[0] != 'X')
 				::SetWindowTextW(windows[i].wnd, windows[i].text);
 			::ShowWindow(windows[i].wnd, SW_SHOWNA);
 		}
 	}
-	else {
-		for (size_t i = 0; i < ARRAYSIZE(windows); ++i) {
+	else
+	{
+		for (size_t i = 0; i < ARRAYSIZE(windows); ++i)
+		{
 			::ShowWindow(windows[i].wnd, SW_HIDE);
 		}
 	}
@@ -175,13 +191,15 @@ void MainWnd::LayoutConnectUI(bool show)
 
 void MainWnd::LayoutPeerListUI(bool show)
 {
-	if (show) {
+	if (show)
+	{
 		RECT rc;
 		::GetClientRect(wnd_, &rc);
 		::MoveWindow(listbox_, 0, 0, rc.right, rc.bottom, TRUE);
 		::ShowWindow(listbox_, SW_SHOWNA);
 	}
-	else {
+	else
+	{
 		::ShowWindow(listbox_, SW_HIDE);
 		::InvalidateRect(wnd_, NULL, TRUE);
 	}

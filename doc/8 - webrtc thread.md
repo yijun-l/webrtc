@@ -104,7 +104,7 @@ class Thread{
 }
 ```
 
-Important functions and members in ```rtc::ThreadManager```
+Important members in ```rtc::ThreadManager```
 
 ```c++
 class ThreadManager{
@@ -155,4 +155,4 @@ bool Conductor::InitializePeerConnection(){
         webrtc::Dav1dDecoderTemplateAdapter>>(),
     nullptr /* audio_mixer */, nullptr /* audio_processing */);
 }
-``
+```
